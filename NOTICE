@@ -1,0 +1,17 @@
+Apache [Geo-Locator 3.0]
+==================================================================================================================
+Copyright [2012-2013] The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+  
+  Any documentation, advertising materials, and other materials related to such distribution and use acknowledge that the software was developed at Language Technology Institute, School of Computer Science, Carnegie Mellon University (http://www.lti.cs.cmu.edu) by Wei Zhang(wei.zhang@cs.cmu.edu) in collaboration with Dr. Judith Gelernter(gelern@cs.cmu.edu), and refer to the following related publication:
+
+  Gelernter, J. and Zhang, W. (2013). Cross-lingual geo-parsing for non-structured data. 7th Workshop on Geographic Information Retrieval (GIR) November 5, 2013, Orlando, Florida, U.S.A.
+
+
+The package also includes a stand-alone indexing tool for generating gazetteer index. It bundles apache lucene inside.
+The version is   Apache lucene core 3.6.2 and lucene analyzers 3.1.0(http://lucene.apache.org/core/) for bulding the gazetteer index and querying it.
+
+ark-tweet-nlp are bundled in the distribution, because they use an older version of lucene, which conflicts with the newer version.
+
