@@ -23,11 +23,16 @@ public class CmdLineTest {
       Tweet tweet = new Tweet(s);
       List<LocEntityAnnotation> topos = ParserFactory.getEnAggrParser().parse(tweet);               
       List<CandidateAndFeature> resolved = CoderFactory.getMLGeoCoder().resolve(tweet, "debug");
+
+      if (topos ==null) {System.err.println("No resolved"); continue;}
+
       for (LocEntityAnnotation topo : topos) {
         System.out.println(topo.getTokenString() + " " + topo.getNEType());
       }
+      if (resolved ==null) {System.err.println("No resolved");continue;}
+      
       for (CandidateAndFeature code : resolved) {
-        System.out.println(code.getAsciiName() + "" + code.getCountry() + "" + code.getLatitude()
+        System.out.println(code.getAsciiName() + " " + code.getCountry() + " " + code.getLatitude()
                 + "" + code.getLongitude());
       }
     }

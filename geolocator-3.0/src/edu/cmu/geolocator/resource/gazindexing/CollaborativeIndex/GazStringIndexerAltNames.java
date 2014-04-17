@@ -154,8 +154,17 @@ public class GazStringIndexerAltNames {
       String argv1 = GlobalParam.getGeoNames()+"/alternateNames.txt";
       String argv2 = GlobalParam.getGazIndex()+"/StringIndex/";
       BufferedReader br = GetReader.getUTF8FileReader(argv1);
+
+      //add the list that adds the items into the gazetteer.
+      String argv3 = "res/geonames/addition.txt";
+      BufferedReader br2 = GetReader.getUTF8FileReader(argv3);
+      
       IndexWriter iw = GetWriter.getIndexWriter(argv2, 1024+512);
+      
       stringIndex.indexAlterNames(br, iw);
+      
+      stringIndex.indexAlterNames(br2, iw);
+      
       // iw.optimize();
       iw.close();
       br.close();
