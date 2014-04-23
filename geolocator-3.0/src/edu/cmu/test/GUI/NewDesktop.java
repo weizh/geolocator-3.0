@@ -2,18 +2,25 @@ package edu.cmu.test.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,6 +33,7 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 import twitter4j.json.DataObjectFactory;
 import edu.cmu.geolocator.GlobalParam;
+import edu.cmu.geolocator.Tag;
 import edu.cmu.geolocator.coder.CoderFactory;
 import edu.cmu.geolocator.io.GetReader;
 import edu.cmu.geolocator.io.GetWriter;
@@ -34,7 +42,7 @@ import edu.cmu.geolocator.model.LocEntityAnnotation;
 import edu.cmu.geolocator.model.Tweet;
 import edu.cmu.geolocator.parser.ParserFactory;
 
-public class NewDesktop extends JPanel implements ActionListener {
+public class NewDesktop extends JPanel implements ActionListener, ItemListener {
 
   public static String newline = "\n";
 
@@ -57,9 +65,12 @@ public class NewDesktop extends JPanel implements ActionListener {
           + newline + newline + "How to use: " + newline + "1.Open a file by pressing Open, "
           + newline + "2.Choose save file by pressing Save, " + newline
           + "3.Choose the gazetteer index that is created (that you created with indexer.jar). "
-          + newline + "4.click run to tag the data." + newline + "The progress will be shown on console";
+          + newline + "4.click run to tag the data." + newline
+          + "The progress will be shown on console";
 
   JButton openButton, saveButton, runButton, palseButton, resumeButton, openIndexButton;
+
+  JCheckBox tpButton, bdButton, stButton, abButton;
 
   JTextArea log;
 
@@ -73,6 +84,8 @@ public class NewDesktop extends JPanel implements ActionListener {
 
   int linecount = 0;
 
+  HashMap<String, Boolean> tagFilter;
+
   public NewDesktop() {
     super(new BorderLayout());
 
@@ -82,28 +95,68 @@ public class NewDesktop extends JPanel implements ActionListener {
     log.setMargin(new Insets(5, 5, 5, 5));
     log.setEditable(false);
     log.append(desc + newline + newline + copyright + newline + newline);
+
+    // initilize the tag Filter here
+    tagFilter = new HashMap<String, Boolean>();
+    tagFilter.put("tp", true);
+    tagFilter.put("bd", true);
+    tagFilter.put("st", true);
+    tagFilter.put("ab", true);
+
     JScrollPane logScrollPane = new JScrollPane(log);
 
     // Create a file chooser
     fc = new JFileChooser();
 
-    openButton = new JButton("Open a File...");
+    openButton = new JButton("Step 1:\nOpen a JSON tweet File...");
     openButton.addActionListener(this);
 
-    openIndexButton = new JButton("Open the Index ...");
-    openIndexButton.addActionListener(this);
-
-    saveButton = new JButton("Save a File...");
+    saveButton = new JButton("Step 2:\nChoose save file path...");
     saveButton.addActionListener(this);
 
-    runButton = new JButton("Run");
+    openIndexButton = new JButton("Step 3:\nOpen the Gazetteer Index ...");
+    openIndexButton.addActionListener(this);
+
+    runButton = new JButton("Step 5:\nRun");
     runButton.addActionListener(this);
 
+    // create checkbox to select the output result type
+
+    // Create the check boxes.
+    tpButton = new JCheckBox("toponym");
+    tpButton.setMnemonic(KeyEvent.VK_T);
+    tpButton.setSelected(true);
+    tpButton.addItemListener(this);
+    
+    bdButton = new JCheckBox("building");
+    bdButton.setMnemonic(KeyEvent.VK_B);
+    bdButton.setSelected(true);
+    bdButton.addItemListener(this);
+    
+    stButton = new JCheckBox("street");
+    stButton.setMnemonic(KeyEvent.VK_S);
+    stButton.setSelected(true);
+    stButton.addItemListener(this);
+    
+    abButton = new JCheckBox("abbreviation");
+    abButton.setMnemonic(KeyEvent.VK_A);
+    abButton.setSelected(true);
+    abButton.addItemListener(this);
+    
+    
     // For layout purposes, put the buttons in a separate panel
-    JPanel buttonPanel = new JPanel(); // use FlowLayout
+    JPanel checkPanel = new JPanel(new GridLayout(0, 1));
+    checkPanel.add(tpButton);
+    checkPanel.add(bdButton);
+    checkPanel.add(stButton);
+    checkPanel.add(abButton);
+
+    JPanel buttonPanel = new JPanel(new GridLayout(1, 0)); // use FlowLayout
     buttonPanel.add(openButton);
     buttonPanel.add(saveButton);
     buttonPanel.add(openIndexButton);
+    buttonPanel.add(new JTextArea("Step 4:\nChoose output location types:"));
+    buttonPanel.add(checkPanel);
     buttonPanel.add(runButton);
 
     // Add the buttons and the log to this panel.
@@ -111,6 +164,38 @@ public class NewDesktop extends JPanel implements ActionListener {
     add(logScrollPane, BorderLayout.CENTER);
 
     // Add the initialization of geolocator
+  }
+
+  /**
+   * Fill out the tag filter based on the radio selection
+   * 
+   * @param e
+   */
+  @Override
+  public void itemStateChanged(ItemEvent e) {
+    Object source = e.getItemSelectable();
+    if (e.getStateChange() == ItemEvent.SELECTED) {
+      if (source == tpButton) {
+        tagFilter.put("tp", true);
+      } else if (source == bdButton) {
+        tagFilter.put("bd", true);
+      } else if (source == stButton) {
+        tagFilter.put("st", true);
+      } else if (source == abButton) {
+        tagFilter.put("ab", true);
+      }
+    } else if (e.getStateChange() == ItemEvent.DESELECTED){
+      if (source == tpButton) {
+        tagFilter.put("tp", false);
+      } else if (source == bdButton) {
+        tagFilter.put("bd", false);
+      } else if (source == stButton) {
+        tagFilter.put("st", false);
+      } else if (source == abButton) {
+        tagFilter.put("ab", false);
+      }
+    }
+    log.append(tagFilter.toString());
   }
 
   @Override
@@ -158,16 +243,16 @@ public class NewDesktop extends JPanel implements ActionListener {
       GlobalParam.setGazIndex(outputfile.getPath());
     } else if (e.getSource() == runButton) {
       try {
-        run();
+         run();
         log.setCaretPosition(log.getDocument().getLength());
       } catch (IOException e1) {
-        // TODO Auto-generated catch block
-        e1.printStackTrace();
+        System.err.println("Runnning Error occured.");
       }
     }
   }
 
   private void run() throws IOException {
+    HashSet<String> filter = Tag.getFilter(tagFilter);
     System.out.println(inputfile.getAbsolutePath());
     System.out.println(outputfile.getAbsolutePath());
 
@@ -216,9 +301,11 @@ public class NewDesktop extends JPanel implements ActionListener {
       tweet.setToponyms(topos);
 
       for (LocEntityAnnotation topo : topos) {
-        log.append("\n[Recognized]: " + topo.getTokenString() + "  [Place type]: "
-                + topo.getNEType());
-        bw.write("[LOCATION=" + topo.getTokenString() + " ENTITY_TYPE=" + topo.getNEType() + "]");
+        if (filter.contains(topo.getNEType())) {
+          log.append("\n[Recognized]: " + topo.getTokenString() + "  [Place type]: "
+                  + topo.getNEType());
+          bw.write("[LOCATION=" + topo.getTokenString() + " ENTITY_TYPE=" + topo.getNEType() + "]");
+        }
       }
       bw.write("\t");
 
@@ -242,12 +329,14 @@ public class NewDesktop extends JPanel implements ActionListener {
           // This is for the user to decide which is the best they want.
           // We may improve this later to output only one result.
           for (CandidateAndFeature c : resolved) {
-            log.append(c.getAsciiName() + " Country:" + c.getCountryCode() + " State:"
-                    + c.getAdm1Code() + " Latitude:" + c.getLatitude() + " Longitude:"
-                    + c.getLongitude());
-            bw.write("[LOCATION=" + c.getAsciiName() + " COUNTRY_CODE=" + c.getCountryCode()
-                    + " STATE_CODE=" + c.getAdm1Code() + " LATITUDE=" + c.getLatitude()
-                    + " LONGITUDE=" + c.getLongitude() + "]");
+            if (filter.contains(c.getLe().getNEType())) {
+              log.append(c.getAsciiName() + " Country:" + c.getCountryCode() + " State:"
+                      + c.getAdm1Code() + " Latitude:" + c.getLatitude() + " Longitude:"
+                      + c.getLongitude());
+              bw.write("[LOCATION=" + c.getAsciiName() + " COUNTRY_CODE=" + c.getCountryCode()
+                      + " STATE_CODE=" + c.getAdm1Code() + " LATITUDE=" + c.getLatitude()
+                      + " LONGITUDE=" + c.getLongitude() + "]");
+            }
 
           }
         }
