@@ -1,4 +1,4 @@
-package edu.cmu.test.GeocoderTrainingGen;
+package edu.cmu.test.geocoderTrainingGen;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

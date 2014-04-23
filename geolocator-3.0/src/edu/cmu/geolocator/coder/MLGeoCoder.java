@@ -119,11 +119,11 @@ public class MLGeoCoder {
 
     for (CandidateAndFeature d : decoded)
       SVMOutput.add(d.getOriginName());
-    System.out.println("SVM output is :" + SVMOutput);
+//    System.out.println("SVM output is :" + SVMOutput);
 
     int i = 0;
     for (CandidateAndFeature d : maxPopCandidates) {
-      System.out.println("maxPosCandidate " + (i++) + " is " + d.getOriginName());
+//      System.out.println("maxPosCandidate " + (i++) + " is " + d.getOriginName());
       if (!SVMOutput.contains(d.getOriginName())
        && d.getPopulation() > 999
       )

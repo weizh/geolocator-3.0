@@ -82,9 +82,6 @@ public class Desktop {
 
   private String gazpath, resroot, enNER, langd;
 
-  private static final Index ci = new CollaborativeIndex().config("GazIndex/StringIndex",
-          "GazIndex/InfoIndex", "mmap", "mmap").open();
-
   private FeatureGenerator enfgen;
 
   private EnglishParser enparser;
@@ -127,7 +124,7 @@ public class Desktop {
      */
     Border blackline = BorderFactory.createLineBorder(Color.black);
     frame = new JFrame();
-    frame.setBounds(100, 100, 588, 486);
+    frame.setBounds(100, 100, 1088, 486);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     frame.setTitle("GeoLocator");
@@ -215,7 +212,7 @@ public class Desktop {
      */
     JButton btnNewButton = new JButton("Input File");
     btnNewButton.setToolTipText("Select file of toponyms to tag.");
-    btnNewButton.setBounds(528, 10, 33, 23);
+    btnNewButton.setBounds(528, 10, 160, 23);
     frame.getContentPane().add(btnNewButton);
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
@@ -227,7 +224,7 @@ public class Desktop {
      */
     JButton btnNewButton_1 = new JButton("Ouput File");
     btnNewButton_1.setToolTipText("Select file to store results.");
-    btnNewButton_1.setBounds(528, 58, 33, 23);
+    btnNewButton_1.setBounds(528, 58, 160, 23);
     frame.getContentPane().add(btnNewButton_1);
     btnNewButton_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {

@@ -46,10 +46,10 @@ public class PipelineTest {
       System.out.println("[PLACE FIELD]:" + tweet.getPlace());
 
       // generate the parsed toponyms from the tweet.
+      System.out.println("GEOPARSING... ");
       List<LocEntityAnnotation> topos = ParserFactory.getEnAggrParser().parse(tweet);
       tweet.setToponyms(topos);
 
-      System.out.println("GEOPARSING... ");
       // print the extracted toponyms
       for (LocEntityAnnotation topo : topos)
         System.out.println(topo.getTokenString() + "  [TYPE]: " + topo.getNEType());
