@@ -75,14 +75,14 @@ public class MLGeoCoder {
    * @return
    * @throws Exception
    */
-  public List<CandidateAndFeature> resolve(Tweet example, String mode) throws Exception {
+  public List<CandidateAndFeature> resolve(Tweet example, String mode,String filter) throws Exception {
 
     ArrayList<CandidateAndFeature> decoded = new ArrayList<CandidateAndFeature>();
 
     problem = new svm_problem();
 
     // copy 2d feature array into feature lists
-    LocGroupFeatures feature = new LocGroupFeatures(example, mode).toFeatures();
+    LocGroupFeatures feature = new LocGroupFeatures(example, mode,filter).toFeatures();
     farrays = feature.getFeatureArrays();
 
     ArrayList<CandidateAndFeature> maxPopCandidates = getMaxPopulation(farrays);

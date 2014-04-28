@@ -7,6 +7,6 @@ import edu.cmu.geolocator.model.Tweet;
 
 public interface GeoCoder {
 
-  List<CandidateAndFeature> resolve(Tweet example, String mode) throws Exception;
+  List<CandidateAndFeature> resolve(Tweet example, String mode,String filter) throws Exception;
 
 }

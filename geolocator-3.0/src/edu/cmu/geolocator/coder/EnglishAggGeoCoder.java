@@ -17,21 +17,23 @@ public class EnglishAggGeoCoder implements GeoCoder {
   HashMap<CandidateAndFeature, Double> agg;
 
   @Override
-  public List<CandidateAndFeature> resolve(Tweet example, String mode) throws Exception {
+  public List<CandidateAndFeature> resolve(Tweet example, String mode, String filter) throws Exception {
     agg = new HashMap<CandidateAndFeature, Double>();
-    mlresult = CoderFactory.getMLGeoCoder().resolve(example, mode);
-    amltyresult = CoderFactory.getAmanalityGeoCoder().resolve(example, mode);
-    maxpopresult = CoderFactory.getMaxPopGeoCoder().resolve(example, mode);
-
+    mlresult = CoderFactory.getMLGeoCoder().resolve(example, mode,filter);
+    amltyresult = CoderFactory.getAmanalityGeoCoder().resolve(example, mode,filter);
+    maxpopresult = CoderFactory.getMaxPopGeoCoder().resolve(example, mode,filter);
+    if (mlresult!=null)
     for (CandidateAndFeature ml : mlresult) {
       agg.put(ml, ml.getProb());
     }
+    if (amltyresult!=null)
     for (CandidateAndFeature am : amltyresult) {
       if (agg.containsKey(am))
         agg.put(am, agg.get(am) + am.getProb() * 0.1);
       else
         agg.put(am, am.getProb());
     }
+    if (maxpopresult!=null)
     for (CandidateAndFeature mx : maxpopresult) {
       if (agg.containsKey(mx))
         agg.put(mx, agg.get(mx) + mx.getProb() * 0.1);

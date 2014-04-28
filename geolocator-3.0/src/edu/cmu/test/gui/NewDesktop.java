@@ -39,6 +39,7 @@ import edu.cmu.geolocator.io.GetReader;
 import edu.cmu.geolocator.io.GetWriter;
 import edu.cmu.geolocator.model.CandidateAndFeature;
 import edu.cmu.geolocator.model.LocEntityAnnotation;
+import edu.cmu.geolocator.model.LocGroupFeatures;
 import edu.cmu.geolocator.model.Tweet;
 import edu.cmu.geolocator.parser.ParserFactory;
 
@@ -76,7 +77,7 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
 
   JFileChooser fc;
 
-  File inputfile, outputfile,indexfile;
+  File inputfile, outputfile, indexfile;
 
   BufferedWriter bw;
 
@@ -127,23 +128,22 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
     tpButton.setMnemonic(KeyEvent.VK_T);
     tpButton.setSelected(true);
     tpButton.addItemListener(this);
-    
+
     bdButton = new JCheckBox("building");
     bdButton.setMnemonic(KeyEvent.VK_B);
     bdButton.setSelected(true);
     bdButton.addItemListener(this);
-    
+
     stButton = new JCheckBox("street");
     stButton.setMnemonic(KeyEvent.VK_S);
     stButton.setSelected(true);
     stButton.addItemListener(this);
-    
+
     abButton = new JCheckBox("abbreviation");
     abButton.setMnemonic(KeyEvent.VK_A);
     abButton.setSelected(true);
     abButton.addItemListener(this);
-    
-    
+
     // For layout purposes, put the buttons in a separate panel
     JPanel checkPanel = new JPanel(new GridLayout(0, 1));
     checkPanel.add(tpButton);
@@ -184,7 +184,7 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
       } else if (source == abButton) {
         tagFilter.put("ab", true);
       }
-    } else if (e.getStateChange() == ItemEvent.DESELECTED){
+    } else if (e.getStateChange() == ItemEvent.DESELECTED) {
       if (source == tpButton) {
         tagFilter.put("tp", false);
       } else if (source == bdButton) {
@@ -244,7 +244,7 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
       GlobalParam.setGazIndex(indexfile.getPath());
     } else if (e.getSource() == runButton) {
       try {
-         run();
+        run();
         log.setCaretPosition(log.getDocument().getLength());
       } catch (IOException e1) {
         System.err.println("Runnning Error occured.");
@@ -254,8 +254,8 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
 
   private void run() throws IOException {
     HashSet<String> filter = Tag.getFilter(tagFilter);
-    System.out.println("Run output:"+inputfile.getAbsolutePath());
-    System.out.println("Run output:"+outputfile.getAbsolutePath());
+    System.out.println("Run output:" + inputfile.getAbsolutePath());
+    System.out.println("Run output:" + outputfile.getAbsolutePath());
 
     try {
       br = GetReader.getUTF8FileReader(inputfile.getAbsolutePath());
@@ -318,7 +318,8 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
         log.append("\n[GEOCODING...]");
 
         try {
-          resolved = CoderFactory.getMLGeoCoder().resolve(tweet, "debug");
+          resolved = CoderFactory.getENAggGeoCoder().resolve(tweet, LocGroupFeatures.DEBUGMODE,
+                  LocGroupFeatures.NOFILTER);
         } catch (Exception e) {
           log.append("\nLocation Resolution error");
         }
@@ -337,7 +338,7 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
                       + c.getLongitude());
               bw.write("[LOCATION=" + c.getAsciiName() + " COUNTRY_CODE=" + c.getCountryCode()
                       + " STATE_CODE=" + c.getAdm1Code() + " LATITUDE=" + c.getLatitude()
-                      + " LONGITUDE=" + c.getLongitude() + "]");
+                      + " LONGITUDE=" + c.getLongitude() + " PROBABILITY:" + c.getProb() + "]");
             }
 
           }

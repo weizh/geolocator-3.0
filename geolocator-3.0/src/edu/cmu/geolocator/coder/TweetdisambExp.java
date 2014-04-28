@@ -373,7 +373,7 @@ public class TweetdisambExp {
         continue;
       }
       System.out.println("The toponyms are : " + examples.get(i).getToponymsAsText());
-      LocGroupFeatures feature = new LocGroupFeatures(examples.get(i), "train").toFeatures();
+      LocGroupFeatures feature = new LocGroupFeatures(examples.get(i),LocGroupFeatures.TRAINMODE,LocGroupFeatures.NOFILTER ).toFeatures();
       ArrayList<svm_node[]> fvec = feature.getFeatureVector();
       ArrayList<Double> flabel = feature.getLabels();
       for (int j = 0; j < fvec.size(); j++) {
@@ -418,7 +418,7 @@ public class TweetdisambExp {
     ArrayList<svm_node[]> nodelist;
     ArrayList<Double> labels;
 
-    LocGroupFeatures feature = new LocGroupFeatures(example, "train").toFeatures();
+    LocGroupFeatures feature = new LocGroupFeatures(example,LocGroupFeatures.TRAINMODE,LocGroupFeatures.NOFILTER).toFeatures();
     ArrayList<ArrayList<CandidateAndFeature>> farrays = feature.getFeatureArrays();
     ArrayList<CandidateAndFeature> fs = new ArrayList<CandidateAndFeature>();
 
@@ -485,7 +485,7 @@ public class TweetdisambExp {
     ArrayList<String> ids;
     HashSet<String> predictedIds = new HashSet<String>();
 
-    LocGroupFeatures feature = new LocGroupFeatures(example, "train").toFeatures();
+    LocGroupFeatures feature = new LocGroupFeatures(example,LocGroupFeatures.TRAINMODE,LocGroupFeatures.NOFILTER).toFeatures();
     ArrayList<ArrayList<CandidateAndFeature>> farrays = feature.getFeatureArrays();
     ArrayList<CandidateAndFeature> fs = new ArrayList<CandidateAndFeature>();
 

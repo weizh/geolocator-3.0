@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import libsvm.svm_node;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexFileNames;
 
 import edu.cmu.geolocator.common.TweetDisambUtil;
 import edu.cmu.geolocator.parser.ParserFactory;
@@ -26,18 +27,22 @@ public class LocGroupFeatures {
     return featureArrays;
   }
 
-  String mode;// train, debug
+  public static final String TRAINMODE = "train", DEBUGMODE = "debug",
+          FILTERZEROPOP = "filterZeroPop", FILTERLESS1000POP = "filterLess1000Pop", NOFILTER = "nofilter";
 
   /**
    * create loc group features for :
    * 
    * 'train' or 'debug'
    * 
+   * filter rules: 'noZeroPop', 'noLess1000Pop'
+   * 
    * @param t
    * @param mode
+   * @param filterRule
    * @throws Exception
    */
-  public LocGroupFeatures(Tweet t, String mode) throws Exception {
+  public LocGroupFeatures(Tweet t, String mode, String filterRule) throws Exception {
     List<LocEntityAnnotation> topos = t.getToponyms();
 
     int _numberOfTopos = topos.size();
@@ -60,10 +65,21 @@ public class LocGroupFeatures {
       }
       ArrayList<CandidateAndFeature> tempFeatureArray = new ArrayList<CandidateAndFeature>();
       for (Document cand : candidates) {
+        
+        // filter 
+        String a = cand.get(InfoFields.population);
+        int inta = Integer.parseInt(a);
+        if (filterRule.equals(LocGroupFeatures.FILTERZEROPOP))
+          if (inta < 1)
+            continue;
+        if (filterRule.equals(LocGroupFeatures.FILTERZEROPOP))
+          if (inta < 1000)
+            continue;
+
         CandidateAndFeature aFeature = new CandidateAndFeature(alocentity.getTokenString(), cand,
                 alocentity);
         // select if to fill out Y by the mode.
-        if (mode.equals("train"))
+        if (mode.equals(LocGroupFeatures.TRAINMODE))
           if (alocentity.ids.contains(cand.get(InfoFields.id)))
             aFeature.setY(1);
           else
@@ -85,11 +101,11 @@ public class LocGroupFeatures {
      */
     List<LocEntityAnnotation> userLocs = ParserFactory.getEnToponymParser().parse(
             new Tweet(t.getUserLocation()));
-    ArrayList<ArrayList<Document>>matrixDocs= new ArrayList<ArrayList<Document>>();
-    if (userLocs!=null && userLocs.size()!=0)
-      for (LocEntityAnnotation userLoc : userLocs)
-      {
-        ArrayList<Document> docs = ResourceFactory.getClbIndex().getDocumentsByPhrase(userLoc.getTokenString());
+    ArrayList<ArrayList<Document>> matrixDocs = new ArrayList<ArrayList<Document>>();
+    if (userLocs != null && userLocs.size() != 0)
+      for (LocEntityAnnotation userLoc : userLocs) {
+        ArrayList<Document> docs = ResourceFactory.getClbIndex().getDocumentsByPhrase(
+                userLoc.getTokenString());
         matrixDocs.add(docs);
       }
 
@@ -291,7 +307,8 @@ public class LocGroupFeatures {
   public static void main(String argv[]) throws Exception {
     // sample program, not working.
     Tweet t = new Tweet();
-    LocGroupFeatures cf = new LocGroupFeatures(t, "train");
+    LocGroupFeatures cf = new LocGroupFeatures(t, LocGroupFeatures.TRAINMODE,
+            LocGroupFeatures.FILTERZEROPOP);
     cf.toFeatures();
   }
 

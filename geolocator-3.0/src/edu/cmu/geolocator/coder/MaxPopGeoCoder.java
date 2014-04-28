@@ -24,12 +24,12 @@ public class MaxPopGeoCoder {
     return rgcoder;
   }
 
-  public List<CandidateAndFeature> resolve(Tweet example, String mode) throws Exception {
+  public List<CandidateAndFeature> resolve(Tweet example, String mode,String filter) throws Exception {
 
     ArrayList<CandidateAndFeature> decoded = new ArrayList<CandidateAndFeature>();
 
     // copy 2d feature array into feature lists
-    LocGroupFeatures feature = new LocGroupFeatures(example, mode).toFeatures();
+    LocGroupFeatures feature = new LocGroupFeatures(example, mode,filter).toFeatures();
     ArrayList<ArrayList<CandidateAndFeature>> farrays = feature.getFeatureArrays();
 
     ArrayList<CandidateAndFeature> maxPopCandidates = getMaxPopulation(farrays);

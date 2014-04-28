@@ -23,7 +23,7 @@ public class MinimalityGeoCoder implements GeoCoder {
     return agcoder;
   }
 
-  public List<CandidateAndFeature> resolve(Tweet example, String mode) throws Exception {
+  public List<CandidateAndFeature> resolve(Tweet example, String mode,String filter) throws Exception {
 
     System.out.println(example.getToponyms().size());
     if (example.getToponyms() == null)
@@ -41,7 +41,7 @@ public class MinimalityGeoCoder implements GeoCoder {
     ArrayList<CandidateAndFeature> decoded = new ArrayList<CandidateAndFeature>();
 
     // copy 2d feature array into feature lists
-    LocGroupFeatures feature = new LocGroupFeatures(example, mode).toFeatures();
+    LocGroupFeatures feature = new LocGroupFeatures(example, mode,filter).toFeatures();
     ArrayList<ArrayList<CandidateAndFeature>> farrays = feature.getFeatureArrays();
 
     ArrayList<CandidateAndFeature> maxPopCandidates = getAmanalous(farrays);

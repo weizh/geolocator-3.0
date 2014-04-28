@@ -10,6 +10,7 @@ import edu.cmu.geolocator.coder.CoderFactory;
 import edu.cmu.geolocator.io.GetReader;
 import edu.cmu.geolocator.model.CandidateAndFeature;
 import edu.cmu.geolocator.model.LocEntityAnnotation;
+import edu.cmu.geolocator.model.LocGroupFeatures;
 import edu.cmu.geolocator.model.Tweet;
 import edu.cmu.geolocator.parser.ParserFactory;
 
@@ -40,8 +41,7 @@ public class PipelineTest {
       System.out.println("////////////////////////////////////////////////////////////////\n"
               + tweet.getText());
       System.out.println("[MESSAGE]: " + tweet.getText());
-      System.out.println("[COORD]:  " + tweet.getLatitude() + " "
-              + tweet.getLongitude());
+      System.out.println("[COORD]:  " + tweet.getLatitude() + " " + tweet.getLongitude());
       System.out.println("[USER LOCATION]:" + tweet.getUserLocation());
       System.out.println("[PLACE FIELD]:" + tweet.getPlace());
 
@@ -52,19 +52,20 @@ public class PipelineTest {
 
       // print the extracted toponyms
       for (LocEntityAnnotation topo : topos)
-        System.out.println(topo.getTokenString() + "  [TYPE]: " + topo.getNEType()+" [PROB]:"+topo.getNETypeProb());
+        System.out.println(topo.getTokenString() + "  [TYPE]: " + topo.getNEType() + " [PROB]:"
+                + topo.getNETypeProb());
 
       List<CandidateAndFeature> resolved = null;
       if (topos == null)
         System.out.println("NO TOPONYMS PARSED.");
       else {
-        System.out.println(""+topos.size() + " TOPONYMS FOUND.\nGEOCODING...");
+        System.out.println("" + topos.size() + " TOPONYMS FOUND.\nGEOCODING...");
 
         long previous = System.currentTimeMillis();
         // resolve the place
-        resolved = CoderFactory.getENAggGeoCoder().resolve(tweet, "debug");
-        System.out.println("[TIME SPENT]:"
-                + (System.currentTimeMillis() - previous));
+        resolved = CoderFactory.getMaxPopGeoCoder().resolve(tweet, LocGroupFeatures.DEBUGMODE,
+                LocGroupFeatures.FILTERZEROPOP);
+        System.out.println("[TIME SPENT]:" + (System.currentTimeMillis() - previous));
         if (resolved == null)
           System.out.println("[NO TOPONYMS RESOLVED]");
         else {
@@ -75,7 +76,8 @@ public class PipelineTest {
           // We may improve this later to output only one result.
           for (CandidateAndFeature c : resolved) {
             System.out.println(c.getAsciiName() + " Country:" + c.getCountryCode() + " State:"
-                    + c.getAdm1Code() + " Latitude:" + c.getLatitude() + " Longitude:" + c.getLongitude()+" [Prob]:"+c.getProb());
+                    + c.getAdm1Code() + " Latitude:" + c.getLatitude() + " Longitude:"
+                    + c.getLongitude() + " [Prob]:" + c.getProb());
           }
         }
       }
