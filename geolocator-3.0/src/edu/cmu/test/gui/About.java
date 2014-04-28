@@ -21,7 +21,7 @@ under the License.
  * email: wei.zhang@cs.cmu.edu
  * 
  */
-package edu.cmu.test.GUI;
+package edu.cmu.test.gui;
 
 import java.awt.EventQueue;
 

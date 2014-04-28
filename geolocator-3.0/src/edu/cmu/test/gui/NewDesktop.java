@@ -1,4 +1,4 @@
-package edu.cmu.test.GUI;
+package edu.cmu.test.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -76,7 +76,7 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
 
   JFileChooser fc;
 
-  File inputfile, outputfile;
+  File inputfile, outputfile,indexfile;
 
   BufferedWriter bw;
 
@@ -232,15 +232,16 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
       fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
       int returnVal = fc.showOpenDialog(NewDesktop.this);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
-        outputfile = fc.getSelectedFile();
+        indexfile = fc.getSelectedFile();
         // This is where a real application would save the file.
-        log.append("Saving: " + outputfile.getName() + "." + newline);
+        log.append("Opening Index: " + indexfile.getName() + "." + newline);
       } else {
         log.append("Save command cancelled by user." + newline);
       }
       log.setCaretPosition(log.getDocument().getLength());
 
-      GlobalParam.setGazIndex(outputfile.getPath());
+      // set the index file path to indexfile.
+      GlobalParam.setGazIndex(indexfile.getPath());
     } else if (e.getSource() == runButton) {
       try {
          run();
@@ -253,8 +254,8 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
 
   private void run() throws IOException {
     HashSet<String> filter = Tag.getFilter(tagFilter);
-    System.out.println(inputfile.getAbsolutePath());
-    System.out.println(outputfile.getAbsolutePath());
+    System.out.println("Run output:"+inputfile.getAbsolutePath());
+    System.out.println("Run output:"+outputfile.getAbsolutePath());
 
     try {
       br = GetReader.getUTF8FileReader(inputfile.getAbsolutePath());
@@ -263,8 +264,9 @@ public class NewDesktop extends JPanel implements ActionListener, ItemListener {
     } catch (UnsupportedEncodingException e1) {
       e1.printStackTrace();
     }
+    String path = outputfile.getAbsolutePath();
     try {
-      bw = GetWriter.getFileWriter(outputfile.getAbsolutePath());
+      bw = GetWriter.getFileWriter(path);
     } catch (IOException e1) {
       System.err.println("Output file not found.");
     }

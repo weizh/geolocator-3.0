@@ -14,9 +14,9 @@ Then, all the resources will be downloaded, the installation will take roughly 1
 How to Run:
 
 See src/edu/cmu/test/PipelineTest.java for the sample code. The code pipeline shows how to readin Tweet JSON file (one line per tweet), perform geoparsing,
-and then geocoding. 
+and then geocoding. Please set the memory to -Xmx2000m.
 
-Commandline test is also available in CmdLineTest.java. It takes a tweet-like sentence as input, and parse the results. However, it's not possible to use the user location info to disambiguate the locations though.
+If you want to use a GUI, there is one in edu/cmu/test/gui/NewDesktop.java. Run this code with Option -Xmx2000m as usual.
 
 So please use the twitter JSON file instead of sentence only to make the most of the geolocator.
 
