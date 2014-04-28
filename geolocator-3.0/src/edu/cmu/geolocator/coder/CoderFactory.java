@@ -8,7 +8,16 @@ public class CoderFactory {
     return MLGeoCoder.getInstance();
 }
   
-  public static RuleGeoCoder getRuleGeoCoder(){
-    return RuleGeoCoder.getInstance();
+  public static MaxPopGeoCoder getMaxPopGeoCoder(){
+    return MaxPopGeoCoder.getInstance();
   }
+  
+  public static AmanalityGeoCoder getAmanalityGeoCoder(){
+    return AmanalityGeoCoder.getInstance();
+  }
+  
+  public static EnglishAggGeoCoder getENAggGeoCoder(){
+    return EnglishAggGeoCoder.getInstance();
+  }
+  
 }

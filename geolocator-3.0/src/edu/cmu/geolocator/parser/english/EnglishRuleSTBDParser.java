@@ -99,6 +99,8 @@ public class EnglishRuleSTBDParser implements STBDParser {
             t[i - startpos] = tweet.getSentence().getTokens()[i].setNE("st");
           }
           LocEntityAnnotation le = new LocEntityAnnotation(startpos, endpos, "st", t);
+          le.setNETypeProb(0.85);
+
           les.add(le);
         }
       }
@@ -114,10 +116,14 @@ public class EnglishRuleSTBDParser implements STBDParser {
           t[i - startpos] = tweet.getSentence().getTokens()[i].setNE("bd");
         }
         LocEntityAnnotation le = new LocEntityAnnotation(startpos, endpos, "bd", t);
+
+        // set the probability of the NE type
+        // This may be changed later.
+        le.setNETypeProb(0.85);
+
         les.add(le);
       }
     }
-    tweet.setToponyms(les);
     return ParserUtils.ResultReduce(les, true);
   }
 

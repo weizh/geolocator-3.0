@@ -313,8 +313,8 @@ public class ParserUtils {
       lowerESBuildingPrefix.add(StringUtil.getDeAccentLoweredString(s));
     Dictionary endict = null, esdict = null;
     try {
-      endict = Dictionary.getSetFromListFile("res/en/words.filtered_SRC1000PlusCountryPlusStates.txt", true,
-              false);
+      endict = Dictionary.getSetFromListFile(
+              "res/en/words.filtered_SRC1000PlusCountryPlusStates.txt", true, false);
       esdict = Dictionary.getSetFromListFile("res/es/lradic.txt", true, false);
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -441,17 +441,36 @@ public class ParserUtils {
     return newmatches;
   }
 
+  /**
+   * This function is for reducing the results and generate the confidence value for each toponym
+   * recognized.
+   * 
+   * @param les
+   * @param t
+   * @return
+   */
   public static List<LocEntityAnnotation> ResultReduce(List<LocEntityAnnotation> les, boolean t) {
     // TODO Auto-generated method stub
     Collections.sort(les, LocEntityAnnotation.spanOrderComparator);
 
     List<LocEntityAnnotation> nles = new ArrayList<LocEntityAnnotation>();
-    for (int i = 0; i < les.size(); i++){
+    for (int i = 0; i < les.size(); i++) {
       boolean flag = false;
       for (int j = i + 1; j < les.size(); j++) {
         if (les.get(i).getToksStart() >= les.get(j).getToksStart()
                 && les.get(i).getToksEnd() <= les.get(j).getToksEnd())
-          flag=true;
+        {
+          flag = true;
+          double d = les.get(i).getNETypeProb()+0.1*les.get(j).getNETypeProb();
+          les.get(i).setNETypeProb(d>0.99?1:d);
+        }
+        if (les.get(i).getToksStart() == les.get(j).getToksStart()
+                && les.get(i).getToksEnd() == les.get(j).getToksEnd())
+        {
+          flag = true;
+          double d = les.get(i).getNETypeProb()+0.1*les.get(j).getNETypeProb();
+          les.get(i).setNETypeProb(d>0.99?1:d);
+        }
       }
       if (!flag)
         nles.add(les.get(i));

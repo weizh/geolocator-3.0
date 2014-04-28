@@ -46,6 +46,15 @@ public class LocEntityAnnotation {
   private Token[] tokens;
 
   private String NEType;
+  private double NETypeProb;
+
+  public double getNETypeProb() {
+    return NETypeProb;
+  }
+
+  public void setNETypeProb(double nETypeProb) {
+    NETypeProb = nETypeProb;
+  }
 
   /**
    * This is absolutely necessary.

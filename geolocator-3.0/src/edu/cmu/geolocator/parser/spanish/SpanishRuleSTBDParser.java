@@ -132,7 +132,9 @@ public class SpanishRuleSTBDParser implements STBDParser {
             t[i - startpos] = tweet.getSentence().getTokens()[i].setNE("st");
           }
           LocEntityAnnotation le = new LocEntityAnnotation(startpos, endpos, "st", t);
-          les.add(le);
+          le.setNETypeProb(0.85);
+         
+les.add(le);
         }
       }
     }
@@ -170,6 +172,9 @@ public class SpanishRuleSTBDParser implements STBDParser {
               t[i - startpos] = tweet.getSentence().getTokens()[i].setNE("bd");
             }
             LocEntityAnnotation le = new LocEntityAnnotation(startpos, endpos, "bd", t);
+
+            le.setNETypeProb(0.85);
+
             les.add(le);
           }
         }
@@ -184,6 +189,10 @@ public class SpanishRuleSTBDParser implements STBDParser {
               t[i - startpos] = tweet.getSentence().getTokens()[i].setNE("bd");
             }
             LocEntityAnnotation le = new LocEntityAnnotation(startpos, endpos, "bd", t);
+            
+         // added confidence value for toponym parser.
+            le.setNETypeProb(0.85);
+            
             les.add(le);
           }
         }

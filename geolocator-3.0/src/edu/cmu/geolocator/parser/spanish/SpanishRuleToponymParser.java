@@ -140,8 +140,11 @@ public class SpanishRuleToponymParser implements TPParser {
             countryToks[k] = new Token(str[k], tweet.getId(), j);
           }
 
-          les.add(new LocEntityAnnotation(j, j + min - 1, "tp", countryToks));
+        LocEntityAnnotation le = new LocEntityAnnotation(j, j + min - 1, "tp", countryToks);
+        le.setNETypeProb(0.65); 
+        les.add(le);
 
+          
         }
       }
     }
@@ -191,7 +194,9 @@ public class SpanishRuleToponymParser implements TPParser {
                 topoToks[k] = new Token(str[k], tweet.getId(), _offset + j);
               }
 
-              les.add(new LocEntityAnnotation(_offset + j, _offset + j + i - 1, "tp", topoToks));
+              LocEntityAnnotation le = new LocEntityAnnotation(_offset + j, _offset + j + i - 1, "tp", topoToks);
+              le.setNETypeProb(0.65);
+              les.add(le);
             }
           }
         }

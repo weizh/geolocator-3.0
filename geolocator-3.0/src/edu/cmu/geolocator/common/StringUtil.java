@@ -499,4 +499,12 @@ public class StringUtil {
     }
     return false;
   }
+
+  public static boolean isPunctuation(String token) {
+    // TODO Auto-generated method stub
+    for (char c : token.toCharArray())
+      if (!isPunctuation(c))
+        return false;
+    return true;
+  }
 }

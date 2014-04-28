@@ -52,7 +52,7 @@ public class PipelineTest {
 
       // print the extracted toponyms
       for (LocEntityAnnotation topo : topos)
-        System.out.println(topo.getTokenString() + "  [TYPE]: " + topo.getNEType());
+        System.out.println(topo.getTokenString() + "  [TYPE]: " + topo.getNEType()+" [PROB]:"+topo.getNETypeProb());
 
       List<CandidateAndFeature> resolved = null;
       if (topos == null)
@@ -75,7 +75,7 @@ public class PipelineTest {
           // We may improve this later to output only one result.
           for (CandidateAndFeature c : resolved) {
             System.out.println(c.getAsciiName() + " Country:" + c.getCountryCode() + " State:"
-                    + c.getAdm1Code() + " Latitude:" + c.getLatitude() + " Longitude:" + c.getLongitude());
+                    + c.getAdm1Code() + " Latitude:" + c.getLatitude() + " Longitude:" + c.getLongitude()+" [Prob]:"+c.getProb());
           }
         }
       }

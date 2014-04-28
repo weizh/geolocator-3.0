@@ -177,8 +177,12 @@ public class EnglishRuleToponymParser implements TPParser {
             for (int k = 0; k < min; k++) {
               topoToks[k] = new Token(str[k], tweet.getId(), _offset + j);
             }
+            LocEntityAnnotation le = new LocEntityAnnotation(_offset + j, _offset + j + i - 1, "tp", topoToks);
 
-            les.add(new LocEntityAnnotation(_offset + j, _offset + j + i - 1, "tp", topoToks));
+            // added confidence value for toponym parser.
+            le.setNETypeProb(0.65);
+            
+            les.add(le );
 
           }
           // else
@@ -187,7 +191,6 @@ public class EnglishRuleToponymParser implements TPParser {
       }
     }
     les = ParserUtils.ResultReduce(les, true);
-    tweet.setToponyms(les);
     return les;
   }
 

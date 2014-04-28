@@ -132,8 +132,13 @@ public class MLGeoCoder {
 
     if (decoded.size() == 0)
       return null;
-    else
-      return decoded;
+    else{
+      // added the probability output for each result.
+      for(CandidateAndFeature de:decoded)
+        de.setProb(0.85);
+      
+      return decoded;      
+    }
   }
 
   private ArrayList<CandidateAndFeature> getMaxPopulation(

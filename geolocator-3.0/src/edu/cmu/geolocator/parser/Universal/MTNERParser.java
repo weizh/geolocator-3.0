@@ -181,6 +181,11 @@ public class MTNERParser implements NERTagger {
             t[i - startpos] = tweet.getSentence().getTokens()[i].setNE(previous);
           }
           LocEntityAnnotation le = new LocEntityAnnotation(startpos, endpos, previous, t);
+          
+          // set the probability of the NE type
+          // This may be changed later.
+          le.setNETypeProb(0.95);
+          
           locs.add(le);
         }
       else if (previous.equals("O"))
@@ -189,7 +194,6 @@ public class MTNERParser implements NERTagger {
         endpos = k;
 
     }
-    tweet.setToponyms(locs);
     return locs;
   }
 

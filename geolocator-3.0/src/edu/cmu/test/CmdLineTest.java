@@ -22,18 +22,20 @@ public class CmdLineTest {
     while ((s = br.readLine()) != null) {
       Tweet tweet = new Tweet(s);
       List<LocEntityAnnotation> topos = ParserFactory.getEnAggrParser().parse(tweet);               
-      List<CandidateAndFeature> resolved = CoderFactory.getMLGeoCoder().resolve(tweet, "debug");
-
-      if (topos ==null) {System.err.println("No resolved"); continue;}
+//      List<LocEntityAnnotation> topos = ParserFactory.getEnToponymParser().parse(tweet);               
+      tweet.setToponyms(topos);
+      List<CandidateAndFeature> resolved = CoderFactory.getENAggGeoCoder().resolve(tweet, "debug");
+      
+      if (topos ==null) {System.err.println("No resolved toponyms"); continue;}
 
       for (LocEntityAnnotation topo : topos) {
-        System.out.println(topo.getTokenString() + " " + topo.getNEType());
+        System.out.println(topo.getTokenString() + " " + topo.getNEType()+" "+topo.getNETypeProb());
       }
-      if (resolved ==null) {System.err.println("No resolved");continue;}
+      if (resolved ==null) {System.err.println("No resolved coordinates");continue;}
       
       for (CandidateAndFeature code : resolved) {
-        System.out.println(code.getAsciiName() + " " + code.getCountry() + " " + code.getLatitude()
-                + "" + code.getLongitude());
+        System.out.println(code.getAsciiName() + " " + code.getCountryCode() + " " + code.getLatitude()
+                + "" + code.getLongitude()+"[Prob]:"+code.getProb());
       }
     }
   }
