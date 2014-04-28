@@ -62,7 +62,7 @@ public class PipelineTest {
 
         long previous = System.currentTimeMillis();
         // resolve the place
-        resolved = CoderFactory.getMLGeoCoder().resolve(tweet, "debug");
+        resolved = CoderFactory.getENAggGeoCoder().resolve(tweet, "debug");
         System.out.println("[TIME SPENT]:"
                 + (System.currentTimeMillis() - previous));
         if (resolved == null)
