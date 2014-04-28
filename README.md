@@ -1,6 +1,6 @@
 Read Me
 
-GeoLocator v2.0
+GeoLocator v3.0
 The geolocation algorithm contains both geoparser that extract locations and a geo-coder that assigns latitude and longitude to each location.
 
 The algorithm takes tweet JSON file as input, or tweet-like sentence as input. However, you can not specify the user information in sentence, so we recommand that you use the full JSON file, which includes more information as the system is trained. However, the geoparser is the same no matter if user location is available or not.
