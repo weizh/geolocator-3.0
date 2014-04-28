@@ -12,8 +12,8 @@ public class CoderFactory {
     return MaxPopGeoCoder.getInstance();
   }
   
-  public static AmanalityGeoCoder getAmanalityGeoCoder(){
-    return AmanalityGeoCoder.getInstance();
+  public static MinimalityGeoCoder getAmanalityGeoCoder(){
+    return MinimalityGeoCoder.getInstance();
   }
   
   public static EnglishAggGeoCoder getENAggGeoCoder(){
