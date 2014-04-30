@@ -94,7 +94,7 @@ public class EnglishRuleToponymParser implements TPParser {
     for (int i = 0; i < tweetSent.tokenLength(); i++)
       posstr += tweetSent.getTokens()[i].getPOS();
 
-    //System.out.println(" POS Tagging: " + posstr);
+    // System.out.println(" POS Tagging: " + posstr);
 
     // convert Tokens to Strings
     String[] toks = new String[tokens.length];
@@ -159,7 +159,7 @@ public class EnglishRuleToponymParser implements TPParser {
           /** if it's in index or a state abbreviation, then parse it. */
           if (ResourceFactory.getClbIndex().inIndex(igrams[j])
                   || (ParserUtils.isStateAbbreviation(igrams[j]) && !ParserUtils.isallCap(tweet))) {
-           // System.out.println(igrams[j]);
+            // System.out.println(igrams[j]);
             if (ParserUtils.isFilterword(igrams[j]) && igrams[j].length() > 2 && i == 1
             // || ParserUtils.isEsFilterword(igrams[j]) && igrams[j].length()>2
                     || igrams[j].length() == 1) {
@@ -177,12 +177,38 @@ public class EnglishRuleToponymParser implements TPParser {
             for (int k = 0; k < min; k++) {
               topoToks[k] = new Token(str[k], tweet.getId(), _offset + j);
             }
-            LocEntityAnnotation le = new LocEntityAnnotation(_offset + j, _offset + j + i - 1, "tp", topoToks);
+            LocEntityAnnotation le = new LocEntityAnnotation(_offset + j, _offset + j + i - 1,
+                    "tp", topoToks);
 
             // added confidence value for toponym parser.
             le.setNETypeProb(0.65);
-            
-            les.add(le );
+
+            les.add(le);
+
+          } else if (ParserUtils.isOSMLocation(igrams[j])) {
+            if (ParserUtils.isFilterword(igrams[j]) && igrams[j].length() > 2 && i == 1
+            // || ParserUtils.isEsFilterword(igrams[j]) && igrams[j].length()>2
+                    || igrams[j].length() == 1) {
+              continue;
+            }
+            String[] str = igrams[j].split(" ");
+            int min = i;
+            if (str.length != i) {
+              System.out.println("dimension not agree when unwrapping ngram in enTopoParser.");
+              System.out.println("Proceed anyway. Discard the rest part in ngram.");
+              Math.min(i, str.length);// if demension not agree, choose smaller one.
+            }
+            topoToks = new Token[min];
+            for (int k = 0; k < min; k++) {
+              topoToks[k] = new Token(str[k], tweet.getId(), _offset + j);
+            }
+            LocEntityAnnotation le = new LocEntityAnnotation(_offset + j, _offset + j + i - 1,
+                    "tp-osm", topoToks);
+
+            // added confidence value for toponym parser.
+            le.setNETypeProb(0.65);
+
+            les.add(le);
 
           }
           // else

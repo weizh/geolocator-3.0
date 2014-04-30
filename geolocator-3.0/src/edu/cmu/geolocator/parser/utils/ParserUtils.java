@@ -39,12 +39,13 @@ import edu.cmu.geolocator.resource.dictionary.Dictionary.DicType;
 public class ParserUtils {
 
   public static void main(String argv[]) {
-    System.out.println(ParserUtils.isEsFilterword("de"));
-    List<String> matches = Arrays.asList(new String[] { "g{chile}g", "g{chile stock}g",
-        "g{stock exchange}g" });
-    System.out.println(ResultReduce(matches));
-    System.out.println(ParserUtils.esdictset.size());
-    System.out.println(ParserUtils.isESBuildingPrefix("Oficinas"));
+    System.out.println("sdfj sdfj ".replaceAll(" ", ""));
+//    System.out.println(ParserUtils.isEsFilterword("de"));
+//    List<String> matches = Arrays.asList(new String[] { "g{chile}g", "g{chile stock}g",
+//        "g{stock exchange}g" });
+//    System.out.println(ResultReduce(matches));
+//    System.out.println(ParserUtils.esdictset.size());
+//    System.out.println(ParserUtils.isESBuildingPrefix("Oficinas"));
   }
 
   static HashSet<String> StreetSuffix;
@@ -302,7 +303,8 @@ public class ParserUtils {
 
   }
 
-  static HashSet<String> lowerCountryNames, lowerESBuildingPrefix, dictset, esdictset;
+  static HashSet<String> lowerCountryNames, lowerESBuildingPrefix, dictset, esdictset,osmLocations;
+
   static {
     lowerCountryNames = new HashSet<String>();
     for (String s : CountryNames) {
@@ -311,17 +313,22 @@ public class ParserUtils {
     lowerESBuildingPrefix = new HashSet<String>();
     for (String s : ESBuildingPrefix)
       lowerESBuildingPrefix.add(StringUtil.getDeAccentLoweredString(s));
-    Dictionary endict = null, esdict = null;
+    Dictionary endict = null, esdict = null,osmdict=null;
     try {
       endict = Dictionary.getSetFromListFile(
               "res/en/words.filtered_SRC1000PlusCountryPlusStates.txt", true, false);
+      
       esdict = Dictionary.getSetFromListFile("res/es/lradic.txt", true, false);
+      
+      osmdict = Dictionary.getSetFromListFile("res/f.txt", true, false);
+      
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     dictset = (HashSet<String>) endict.getDic(DicType.SET);
     esdictset = (HashSet<String>) esdict.getDic(DicType.SET);
+    osmLocations = (HashSet<String>)osmdict.getDic(DicType.SET);
   }
 
   // check the word is or is not a street suffix
@@ -515,6 +522,11 @@ public class ParserUtils {
       return true;
     else
       return false;
+  }
+
+  public static boolean isOSMLocation(String string) {
+    string=StringUtil.getDeAccentLoweredString(string).replace(" ", "");
+    return false;
   }
 
 }
