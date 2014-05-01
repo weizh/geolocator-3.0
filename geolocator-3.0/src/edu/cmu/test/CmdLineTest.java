@@ -20,13 +20,24 @@ public class CmdLineTest {
     InputStreamReader isr = new InputStreamReader(System.in);
     BufferedReader br = new BufferedReader(isr);
     String s = null;
+    System.out.println(">");
+
     while ((s = br.readLine()) != null) {
+      System.out.println(">");
+
+      if (s.length() < 1) {
+        System.out.println(">");
+        continue;
+      }
       Tweet tweet = new Tweet(s);
+      System.out.println("geoparsing...");
       List<LocEntityAnnotation> topos = ParserFactory.getEnAggrParser().parse(tweet);
       // List<LocEntityAnnotation> topos = ParserFactory.getEnToponymParser().parse(tweet);
       tweet.setToponyms(topos);
+
+      System.out.println("geocoding...");
       List<CandidateAndFeature> resolved = CoderFactory.getENAggGeoCoder().resolve(tweet,
-              LocGroupFeatures.DEBUGMODE, LocGroupFeatures.NOFILTER);
+              LocGroupFeatures.DEBUGMODE, LocGroupFeatures.FILTERLESS1000POP);
 
       if (topos == null) {
         System.err.println("No resolved toponyms");
@@ -46,6 +57,7 @@ public class CmdLineTest {
         System.out.println(code.getAsciiName() + " " + code.getCountryCode() + " "
                 + code.getLatitude() + "" + code.getLongitude() + "[Prob]:" + code.getProb());
       }
+      System.out.println(">");
     }
   }
 

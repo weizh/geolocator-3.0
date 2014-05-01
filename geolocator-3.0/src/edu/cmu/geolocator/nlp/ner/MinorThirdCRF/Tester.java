@@ -1,5 +1,7 @@
 /**
  * 
+ * Copyright (c) 2012 - 2014 Carnegie Mellon University
+ * 
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -19,6 +21,7 @@ under the License.
  * 
  * @author Wei Zhang,  Language Technology Institute, School of Computer Science, Carnegie-Mellon University.
  * email: wei.zhang@cs.cmu.edu
+ *
  * 
  */
 package edu.cmu.geolocator.nlp.ner.MinorThirdCRF;
