@@ -16,7 +16,7 @@ import edu.cmu.geolocator.parser.ParserFactory;
 
 public class PipelineTest {
 
-  public static void main(String args[]) throws Exception {
+  public static void main(String args[]) throwsf Exception {
 
     // If you have changed where your GazIndex lies, you have to specify where GazIndex lies
     // by using the following:

@@ -36,6 +36,11 @@ wget -P Geonames/ http://download.geonames.org/export/dump/admin2Codes.txt
 wget -P GeoNames/ http://download.geonames.org/export/dump/iso-languagecodes.txt
 wget -P GeoNames/ http://download.geonames.org/export/dump/timeZones.txt
 
+wget -P GeoNames/ http://www.cs.cmu.edu/~weizhan1/geonames/admin1CodesASCII.txt
+wget -P GeoNames/ http://www.cs.cmu.edu/~weizhan1/geonames/admin2Codes.txt
+wget -P GeoNames/ http://www.cs.cmu.edu/~weizhan1/geonames/iso-languagecodes.txt
+wget -P GeoNames/ http://www.cs.cmu.edu/~weizhan1/geonames/timeZones.txt
+
 unzip GeoNames/allCountries.zip 
 unzip GeoNames/alternateNames.zip 
 mv allCountries.txt GeoNames/
