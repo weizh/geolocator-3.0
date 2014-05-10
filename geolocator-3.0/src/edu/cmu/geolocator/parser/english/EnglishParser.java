@@ -55,7 +55,7 @@ public class EnglishParser {
 	ArrayList<LocEntityAnnotation> match;
 	public EnglishParser(boolean misspell){
 		ner = ParserFactory.getEnNERParser();
-		finener = ParserFactory.getFineEnNERParser();
+//		finener = ParserFactory.getFineEnNERParser();
 		stbd = ParserFactory.getEnSTBDParser();
 		tp = ParserFactory.getEnToponymParser();
 	}
@@ -64,11 +64,11 @@ public class EnglishParser {
 		List<LocEntityAnnotation> nerresult = ner.parse(t);
 		List<LocEntityAnnotation> stbdresult = stbd.parse(t);
 		List<LocEntityAnnotation> toporesult = tp.parse(t);
-		List<LocEntityAnnotation> finenerresult = finener.parse(t);
+//		List<LocEntityAnnotation> finenerresult = finener.parse(t);
 		match.addAll(nerresult);
 		match.addAll(stbdresult);
 		match.addAll(toporesult);
-		match.addAll(finenerresult);
+//		match.addAll(finenerresult);
 		return ParserUtils.ResultReduce(match,true);	
 		
 	}
