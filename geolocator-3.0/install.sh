@@ -11,7 +11,6 @@ wget -P lib/ http://repo1.maven.org/maven2/de/jollyday/jollyday/0.4.6/jollyday-0
 
 wget -P lib/ http://repo1.maven.org/maven2/org/twitter4j/twitter4j-core/3.0.3/twitter4j-core-3.0.3.jar
 wget -P lib/ http://sourceforge.net/projects/minorthird/files/MinorThird%20Jar/minorthird-jar_20080611/minorthird_20080611.jar/download
-wget -P lib/ http://repo1.maven.org/maven2/edu/berkeley/nlp/berkeleyparser/r32/berkeleyparser-r32.jar
 wget -P lib/ http://repo1.maven.org/maven2/commons-codec/commons-codec/1.8/commons-codec-1.8.jar
 wget -P lib/ http://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar
 wget -P lib/ http://repo1.maven.org/maven2/org/apache/opennlp/opennlp-tools/1.5.3/opennlp-tools-1.5.3.jar

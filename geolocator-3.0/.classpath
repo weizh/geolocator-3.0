@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="lib/stanford-corenlp-1.3.5.jar"/>
 	<classpathentry kind="lib" path="lib/twitter4j-core-3.0.3.jar" sourcepath="/Users/indri/.m2/repository/org/twitter4j/twitter4j-core/3.0.3/twitter4j-core-3.0.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/minorthird_20080611.jar"/>
-	<classpathentry kind="lib" path="lib/berkeleyparser-r32.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.8.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/trove4j-3.0.3.jar"/>
