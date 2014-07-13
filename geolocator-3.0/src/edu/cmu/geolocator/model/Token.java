@@ -59,8 +59,15 @@ public class Token implements Comparable<Token> {
   boolean inNameGazetteer;
 
   String NE;
+  String NEprediction;
 
-  /** 
+  public String getNEprediction() {
+	return NEprediction;
+}
+public void setNEprediction(String nEprediction) {
+	NEprediction = nEprediction;
+}
+/** 
    * Token string, sentence id, and position in the sentence.
    * @param token
    * @param sid
@@ -78,8 +85,9 @@ public class Token implements Comparable<Token> {
   public Token setNE(String nE) {
     NE = nE;
     return this;
-
   }
+  
+  
 
   public String getNorm() {
     return norm;

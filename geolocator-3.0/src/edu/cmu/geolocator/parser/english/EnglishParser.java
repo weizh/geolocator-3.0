@@ -59,6 +59,7 @@ public class EnglishParser {
 		stbd = ParserFactory.getEnSTBDParser();
 		tp = ParserFactory.getEnToponymParser();
 	}
+	
 	public List<LocEntityAnnotation> parse(Tweet t){
 		match = new ArrayList<LocEntityAnnotation>();
 		List<LocEntityAnnotation> nerresult = ner.parse(t);
