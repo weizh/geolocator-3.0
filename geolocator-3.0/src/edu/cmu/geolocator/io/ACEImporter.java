@@ -38,7 +38,7 @@ public class ACEImporter {
 
 	public static void main(String argb[]) throws IOException {
 		ACEImporter importer = new ACEImporter(
-				"/afs/andrew.cmu.edu/usr23/weizhan1/Downloads");
+				"C:\\Users\\Wynn\\Documents\\wynnzh\\data\\LDC\\ACE\\ACE2005-TrainingData-V6.0\\English");
 		for (Entry<String, Document> e : importer.sDocs.entrySet()) {
 			if (e.getKey() == null)
 				continue;
@@ -65,14 +65,8 @@ public class ACEImporter {
 
 				for (ACE_NETag tag : a)
 					if (tag.getStart() >= start && tag.getEnd() <= end)
-						System.out.println(tag.getStart()
-								+ " "
-								+ tag.getEnd()
-								+ " "
-								+ tag.getCoarseNEType()
-								+ " "
-								+ paraString.substring(tag.getStart() - start,
-										tag.getEnd() - start + 2));
+						System.out.println(tag.getStart() + " " + tag.getEnd() + " " + tag.getCoarseNEType() + " "
+								+ paraString.substring(tag.getStart() - start, tag.getEnd() - start + 2));
 			}
 		}
 
@@ -101,8 +95,7 @@ public class ACEImporter {
 		}
 	}
 
-	private void fillACETagDoc(TagDocument doc, File absoluteFile)
-			throws IOException {
+	private void fillACETagDoc(TagDocument doc, File absoluteFile) throws IOException {
 
 		BufferedReader br = new BufferedReader(new FileReader(absoluteFile));
 
@@ -132,8 +125,7 @@ public class ACEImporter {
 				b_head = true;
 			} else if (line.startsWith("</head>")) {
 				b_head = false;
-			} else if (line.startsWith("<charseq ") && b_head == true
-					&& b_mention == true) {
+			} else if (line.startsWith("<charseq ") && b_head == true && b_mention == true) {
 				String[] tokens = line.split(">");
 				String mention = tokens[1].split("<")[0];
 				String[] nums = tokens[0].split(" ");
@@ -141,8 +133,7 @@ public class ACEImporter {
 				start = start.substring(0, start.length() - 1);
 				String end = nums[2].split("=\"")[1];
 				end = end.substring(0, end.length() - 1);
-				ACE_NETag tag = new ACE_NETag(mention, Integer.parseInt(start),
-						Integer.parseInt(end), etype, esubtype);
+				ACE_NETag tag = new ACE_NETag(mention, Integer.parseInt(start), Integer.parseInt(end), etype, esubtype);
 
 				doc.addTag(tag);
 			}
@@ -204,14 +195,29 @@ public class ACEImporter {
 				paraString = new StringBuilder();
 				paras.add(p);
 
-			} else if (line.startsWith("<TURN>")) {
+			} else if (line.startsWith("<TURN>")||line.startsWith("<POST>")) {
 				lcount++;
 				paraString.append("\n");
-			} else if (line.startsWith("</TURN>")) {
+			} else if (line.startsWith("</TURN>")||line.startsWith("</POST>")) {
 				lcount++;
 				paraString.append("\n");
 
 			} else if (line.startsWith("<SPEAKER>")) {
+
+				lcount += line.length() - 19 + 1;
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
+
+			} else if (line.startsWith("<POSTDATE>")) {
+
+				lcount += line.length() - 21 + 1;
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
+
+			} else if (line.startsWith("<POSTER>")) {
+
+				lcount += line.length() - 17 + 1;
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
+
+			} else if (line.startsWith("<SUBJECT>")) {
 
 				lcount += line.length() - 19 + 1;
 				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
