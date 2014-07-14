@@ -40,35 +40,40 @@ public class ACEImporter {
 		ACEImporter importer = new ACEImporter(
 				"/afs/andrew.cmu.edu/usr23/weizhan1/Downloads");
 		for (Entry<String, Document> e : importer.sDocs.entrySet()) {
-			if (e.getKey()==null)
+			if (e.getKey() == null)
 				continue;
 			System.out.println(e.getKey());
 			ArrayList<Paragraph> paras = e.getValue().getP();
-			for (Paragraph para : paras){
+			for (Paragraph para : paras) {
 				System.out.println(para.getParagraphString());
 				System.out.println(para.getParaStart());
 			}
-			
 
 		}
 		for (Entry<String, TagDocument> e : importer.tagDoc.entrySet()) {
-			if (e.getKey()==null)
+			if (e.getKey() == null)
 				continue;
 			ArrayList<ACE_NETag> a = e.getValue().getTags();
 
 			Document doc = importer.sDocs.get(e.getKey());
-			
+
+			System.out.println(e.getKey());
 			for (Paragraph p : doc.getP()) {
 				String paraString = p.getParagraphString();
 				int start = p.getParaStart();
-				int end = start+ paraString.length();
-				
+				int end = start + paraString.length();
+
 				for (ACE_NETag tag : a)
-					if (tag.getStart()>=start && tag.getEnd()<=end)
-					System.out.println(tag.getStart() + " " + tag.getEnd() + " "
-							+ tag.getCoarseNEType() +" "+  paraString.substring(tag.getStart()-start, tag.getEnd()-start+1)
-							);
-			}			
+					if (tag.getStart() >= start && tag.getEnd() <= end)
+						System.out.println(tag.getStart()
+								+ " "
+								+ tag.getEnd()
+								+ " "
+								+ tag.getCoarseNEType()
+								+ " "
+								+ paraString.substring(tag.getStart() - start,
+										tag.getEnd() - start + 2));
+			}
 		}
 
 	}
@@ -141,6 +146,7 @@ public class ACEImporter {
 
 				doc.addTag(tag);
 			}
+
 		}
 	}
 
@@ -184,28 +190,32 @@ public class ACEImporter {
 				b_hline = false;
 				doc.setHeadline(headline);
 
-			} else if (line.startsWith("<TEXT>") || line.startsWith("</TEXT>")) {
-				
-				lcount++;
-				
-			} else if (line.startsWith("<TURN>")) {
-				lcount++;
-				b_content = true;
+			} else if (line.startsWith("<TEXT>")) {
 				p = new Paragraph();
 				p.setParaStart(lcount);
-
-			} else if (line.startsWith("</TURN>")) {
+				lcount++;
+				b_content = true;
+				paraString.append("\n");
+			} else if (line.startsWith("</TEXT>")) {
 				lcount++;
 				b_content = false;
 				p.setParagraphString(paraString.toString());
-				
+
 				paraString = new StringBuilder();
 				paras.add(p);
-				
+
+			} else if (line.startsWith("<TURN>")) {
+				lcount++;
+				paraString.append("\n");
+			} else if (line.startsWith("</TURN>")) {
+				lcount++;
+				paraString.append("\n");
+
 			} else if (line.startsWith("<SPEAKER>")) {
-				
+
 				lcount += line.length() - 19 + 1;
-				
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
+
 			} else if (b_content == true) {
 
 				if (paraString.toString().length() == 0) {
@@ -216,12 +226,11 @@ public class ACEImporter {
 				lcount = line.length() + 1;
 
 			} else if (b_hline == true) {
-
 				doc.setHeadlineStart(lcount);
 				lcount += line.length() + 1;
 				headline = line;
-
-			}
+			} else
+				lcount++;
 		}
 		doc.setP(paras);
 	}

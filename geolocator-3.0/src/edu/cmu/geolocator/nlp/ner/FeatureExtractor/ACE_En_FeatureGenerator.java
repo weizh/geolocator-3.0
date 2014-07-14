@@ -241,11 +241,11 @@ public class ACE_En_FeatureGenerator {
 
     // f_gaz originally. filled in inGaz Field in token. check norm_tweet field.
     // boolean[] f_gaz =
-    gazTag(tweetSentence, this.index);
+//    gazTag(tweetSentence, this.index);
 
     // use norm_tweet field to tag countries. don't remove f_country, because it's not a type in
     // token.
-    boolean[] f_country = countryTag(tweetSentence);
+//    boolean[] f_country = countryTag(tweetSentence);
 
     for (int i = 0; i < len; i++) {
       // clear feature list for this loop
@@ -259,8 +259,9 @@ public class ACE_En_FeatureGenerator {
       genGazFeatures(f, tweetSentence, i);
       // f7: STREET SUFFIX
       // f8 PREPOSITION
-
-      genCountryFeatures(f, f_country, i);// f10: DIRECTION
+      
+//      genCountryFeatures(f, f_country, i);
+      
       // f10 directions
 
       // FEATURES are not stored in tweetsentence in advance. Those are generated in those features.
