@@ -275,7 +275,9 @@ public class ACE_En_FeatureGenerator {
       // f11: DISTANCE
       // f12: STOPWORDS
       // f13: BUILDING
+      
       instances.add(f);
+      
     }
 
     // convert array to output format.
@@ -283,7 +285,9 @@ public class ACE_En_FeatureGenerator {
     for (int i1 = 0; i1 < instances.size(); i1++) {
       newinstances.add(instances.get(i1).toArray(new Feature[] {}));
     }
+    
     return newinstances;
+    
   }
 
   // //////////////////////////////////////////////////////////////////////////////////
