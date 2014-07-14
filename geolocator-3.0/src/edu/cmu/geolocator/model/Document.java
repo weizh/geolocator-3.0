@@ -13,13 +13,6 @@ public class Document {
 
 	String did;
 
-	public String getParaString() {
-		return paraString;
-	}
-	public void setParaString(String paraString) {
-		this.paraString = paraString;
-	}
-
 	ArrayList<Paragraph> p;
 	public ArrayList<Paragraph> getP() {
 		return p;
@@ -28,7 +21,6 @@ public class Document {
 		this.p = p;
 	}
 
-	String paraString;
 	String headline;
 	int headlineStart;
 	

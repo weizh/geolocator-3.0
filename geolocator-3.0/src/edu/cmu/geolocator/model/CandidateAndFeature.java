@@ -34,7 +34,6 @@ import java.util.List;
 
 import org.apache.lucene.document.Document;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.IntArrayData;
 
 import edu.cmu.geolocator.resource.ResourceFactory;
 import edu.cmu.geolocator.resource.gazindexing.CollaborativeIndex.InfoFields;

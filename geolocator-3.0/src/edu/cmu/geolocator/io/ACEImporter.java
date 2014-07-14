@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import edu.cmu.geolocator.model.ACE_NETag;
 import edu.cmu.geolocator.model.Document;
@@ -15,16 +17,62 @@ import edu.cmu.geolocator.model.TagDocument;
 
 public class ACEImporter {
 
-	ArrayList<Document> sDocs;
-	ArrayList<TagDocument> tagDoc;
+	HashMap<String, Document> sDocs;
+	HashMap<String, TagDocument> tagDoc;
 
-	public ACEImporter() {
-		sDocs = new ArrayList<Document>();
+	public ACEImporter(String filename) {
+		sDocs = new HashMap<String, Document>();
+		tagDoc = new HashMap<String, TagDocument>();
+		try {
+			importDocs(new File(filename));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		align();
 	}
 
-	public void align(){
-		
+	public void align() {
+
 	}
+
+	public static void main(String argb[]) throws IOException {
+		ACEImporter importer = new ACEImporter(
+				"/afs/andrew.cmu.edu/usr23/weizhan1/Downloads");
+		for (Entry<String, Document> e : importer.sDocs.entrySet()) {
+			if (e.getKey()==null)
+				continue;
+			System.out.println(e.getKey());
+			ArrayList<Paragraph> paras = e.getValue().getP();
+			for (Paragraph para : paras){
+				System.out.println(para.getParagraphString());
+				System.out.println(para.getParaStart());
+			}
+			
+
+		}
+		for (Entry<String, TagDocument> e : importer.tagDoc.entrySet()) {
+			if (e.getKey()==null)
+				continue;
+			ArrayList<ACE_NETag> a = e.getValue().getTags();
+
+			Document doc = importer.sDocs.get(e.getKey());
+			
+			for (Paragraph p : doc.getP()) {
+				String paraString = p.getParagraphString();
+				int start = p.getParaStart();
+				int end = start+ paraString.length();
+				
+				for (ACE_NETag tag : a)
+					if (tag.getStart()>=start && tag.getEnd()<=end)
+					System.out.println(tag.getStart() + " " + tag.getEnd() + " "
+							+ tag.getCoarseNEType() +" "+  paraString.substring(tag.getStart()-start, tag.getEnd()-start+1)
+							);
+			}			
+		}
+
+	}
+
 	void importDocs(File node) throws IOException {
 
 		if (node.isDirectory()) {
@@ -37,19 +85,20 @@ public class ACEImporter {
 			if (node.isFile() && node.getAbsolutePath().endsWith(".sgm")) {
 				Document doc = new Document();
 				fillACEDoc(doc, node.getAbsoluteFile());
-				sDocs.add(doc);
+				sDocs.put(doc.getDid(), doc);
 			}
 
 			if (node.isFile() && node.getAbsolutePath().endsWith(".apf.xml")) {
 				TagDocument doc = new TagDocument();
 				fillACETagDoc(doc, node.getAbsoluteFile());
-				tagDoc.add(doc);
+				tagDoc.put(doc.getDid(), doc);
 			}
 		}
 	}
 
-	private void fillACETagDoc(TagDocument doc, File absoluteFile) throws IOException {
-		// TODO Auto-generated method stub
+	private void fillACETagDoc(TagDocument doc, File absoluteFile)
+			throws IOException {
+
 		BufferedReader br = new BufferedReader(new FileReader(absoluteFile));
 
 		String line = null;
@@ -69,22 +118,27 @@ public class ACEImporter {
 				etype = null;
 				esubtype = null;
 			} else if (line.startsWith("<entity_mention ")) {
-				if (line.split(" ")[1].equals("TYPE=\"NAM\""))
+				// String _type = line.split(" ")[2]; System.out.println(_type);
+				if (line.split(" ")[2].equals("TYPE=\"NAM\""))
 					b_mention = true;
-			} else if (line.startsWith("</entity_mention ")) {
+			} else if (line.startsWith("</entity_mention>")) {
 				b_mention = false;
 			} else if (line.startsWith("<head>")) {
 				b_head = true;
 			} else if (line.startsWith("</head>")) {
 				b_head = false;
-			}
-			else if (line.startsWith("<charseq ") && b_head==true && b_mention == true){
+			} else if (line.startsWith("<charseq ") && b_head == true
+					&& b_mention == true) {
 				String[] tokens = line.split(">");
 				String mention = tokens[1].split("<")[0];
 				String[] nums = tokens[0].split(" ");
-				String start = nums[1].split("=\"")[1]; start = start.substring(0,start.length()-1);
-				String end = nums[2].split("=\"")[1]; end = end.substring(0, end.length()-1);
-				ACE_NETag tag = new ACE_NETag(mention, Integer.parseInt(start), Integer.parseInt(end), etype,esubtype);
+				String start = nums[1].split("=\"")[1];
+				start = start.substring(0, start.length() - 1);
+				String end = nums[2].split("=\"")[1];
+				end = end.substring(0, end.length() - 1);
+				ACE_NETag tag = new ACE_NETag(mention, Integer.parseInt(start),
+						Integer.parseInt(end), etype, esubtype);
+
 				doc.addTag(tag);
 			}
 		}
@@ -102,6 +156,8 @@ public class ACEImporter {
 		StringBuilder paraString = new StringBuilder();
 
 		boolean b_hline = false, b_content = false;
+
+		ArrayList<Paragraph> paras = new ArrayList<Paragraph>();
 
 		Paragraph p = null;
 
@@ -129,25 +185,31 @@ public class ACEImporter {
 				doc.setHeadline(headline);
 
 			} else if (line.startsWith("<TEXT>") || line.startsWith("</TEXT>")) {
+				
 				lcount++;
+				
 			} else if (line.startsWith("<TURN>")) {
 				lcount++;
 				b_content = true;
 				p = new Paragraph();
+				p.setParaStart(lcount);
 
 			} else if (line.startsWith("</TURN>")) {
 				lcount++;
 				b_content = false;
 				p.setParagraphString(paraString.toString());
+				
 				paraString = new StringBuilder();
-
+				paras.add(p);
+				
 			} else if (line.startsWith("<SPEAKER>")) {
+				
 				lcount += line.length() - 19 + 1;
+				
 			} else if (b_content == true) {
 
 				if (paraString.toString().length() == 0) {
 					paraString.append(line);
-					p.setParaStart(lcount);
 				} else {
 					paraString.append(" ").append(line);
 				}
@@ -161,5 +223,6 @@ public class ACEImporter {
 
 			}
 		}
+		doc.setP(paras);
 	}
 }

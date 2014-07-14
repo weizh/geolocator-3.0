@@ -42,8 +42,6 @@ import edu.cmu.geolocator.model.Sentence;
 import edu.cmu.geolocator.nlp.Lemmatizer;
 import edu.cmu.geolocator.nlp.NLPFactory;
 import edu.cmu.geolocator.nlp.POSTagger;
-import edu.cmu.geolocator.nlp.lemma.AnnaLemmatizer;
-import edu.cmu.geolocator.nlp.pos.ESAnnaPOSTagger;
 import edu.cmu.geolocator.nlp.tokenizer.EuroLangTwokenizer;
 import edu.cmu.geolocator.parser.utils.ParserUtils;
 import edu.cmu.geolocator.resource.ResourceFactory;
