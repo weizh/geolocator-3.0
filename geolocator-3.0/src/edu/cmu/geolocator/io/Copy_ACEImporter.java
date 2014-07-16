@@ -2,49 +2,25 @@ package edu.cmu.geolocator.io;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import edu.cmu.geolocator.model.ACE_NETag;
 import edu.cmu.geolocator.model.Document;
 import edu.cmu.geolocator.model.Paragraph;
-import edu.cmu.geolocator.model.Sentence;
 import edu.cmu.geolocator.model.TagDocument;
-import edu.cmu.geolocator.model.Token;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
-import edu.stanford.nlp.util.CoreMap;
 
-public class ACEImporter {
+public class Copy_ACEImporter {
 
-	public HashMap<String, Document> sDocs;
-	public HashMap<String, TagDocument> tagDoc;
+	HashMap<String, Document> sDocs;
+	HashMap<String, TagDocument> tagDoc;
 
-	public HashMap<String, Document> getsDocs() {
-		return sDocs;
-	}
-
-	public void setsDocs(HashMap<String, Document> sDocs) {
-		this.sDocs = sDocs;
-	}
-
-	public HashMap<String, TagDocument> getTagDoc() {
-		return tagDoc;
-	}
-
-	public void setTagDoc(HashMap<String, TagDocument> tagDoc) {
-		this.tagDoc = tagDoc;
-	}
-
-	public ACEImporter(String filename) {
+	public Copy_ACEImporter(String filename) {
 		sDocs = new HashMap<String, Document>();
 		tagDoc = new HashMap<String, TagDocument>();
 		try {
@@ -56,115 +32,22 @@ public class ACEImporter {
 		align();
 	}
 
-	 void align() {
-		Iterator iter1 = sDocs.entrySet().iterator();
-		int i = 0;
-		while (iter1.hasNext()) {
-			Map.Entry entry = (Map.Entry) iter1.next();
-			Object key = entry.getKey();
-			// System.out.println(key);
-			Object val = entry.getValue();
-			Document sgmDoc = (Document) val;
-			// sgmDoc.setDid(did);;
-			// System.out.println(sgmDoc.getDid());
-			ArrayList<Paragraph> paras = sgmDoc.getP();
-
-			// System.out.print(para.getParagraphString());
-			String myPara = paras.get(0).getParagraphString();
-			ArrayList<Sentence> sents = new ArrayList<Sentence>();
-			PipeLineAnnotate pla = new PipeLineAnnotate(myPara);
-			List<CoreMap> NLPsents = pla.getSentences();
-
-			for (CoreMap NLPsentence : NLPsents) {
-
-				Sentence mysentence = new Sentence(
-						NLPsentence.get(TextAnnotation.class));
-				sents.add(mysentence);
-				List<CoreLabel> tokens = NLPsentence
-						.get(TokensAnnotation.class);
-
-				int j = 0;
-				Token[] tokensArray = new Token[tokens.size()];
-				for (CoreLabel token : tokens) {
-					int pos = token.beginPosition();
-					int end = token.endPosition();
-					String word = token.get(TextAnnotation.class);
-					String ne = token.get(NamedEntityTagAnnotation.class);
-					// this is the POS tag of the token
-					// String pos = token.get(PartOfSpeechAnnotation.class);
-					// this is the NER label of the token
-					Token myToken = new Token(word, sgmDoc.getDid() + "j", j);
-					myToken.setLemma(token.lemma());
-					myToken.setNE(ne);
-					myToken.setStart(pos+paras.get(0).getParaStart()-1);
-					myToken.setEnd(end+paras.get(0).getParaStart()-1);
-					tokensArray[j] = myToken;
-					j++;
-
-				}
-				mysentence.setTokens(tokensArray);
-				mysentence.setStart(tokensArray[0].getStart());
-				mysentence.setEnd(tokensArray[tokensArray.length - 1].getEnd());
-
-				TagDocument tagZDocument = tagDoc.get(sgmDoc.getDid());
-				ArrayList<ACE_NETag> ACETags = tagZDocument.getTags();
-				for (ACE_NETag ACEtag : ACETags) {
-					
-					//System.out.println(ACEtag.getPhrase()+" "+ACEtag.getStart()+ " " +ACEtag.getEnd());
-					 
-					if (ACEtag.getStart() >= mysentence.getStart()
-							&& ACEtag.getEnd() <= mysentence.getEnd()) {
-						Token[] tokenCompare = mysentence.getTokens();
-						for (int k = 0; k < tokenCompare.length; k++) {
-							
-							if (ACEtag.getStart() <= tokenCompare[k].getStart()
-									&& tokenCompare[k].getEnd() <= ACEtag
-											.getEnd()+1) {
-/*								System.out.println(tokenCompare[k].getToken()
-										+ " " + tokenCompare[k].getStart()
-										+ " " + tokenCompare[k].getEnd()+ " "  +ACEtag.getStart()+ " " +ACEtag.getEnd()) ;*/
-								 tokenCompare[k].setNE(ACEtag.getCoarseNEType());
-//								 System.out.println(tokenCompare[k].getToken() +"  "+ tokenCompare[k].getNE());
-							}
-
-						}
-					}
-				}
-
-			}
-
-			paras.get(0).setSentences(sents);
-
-			// System.out.println("cx");
-			// pla.prettyPrint();
-			// ArrayList<Sentence> sents = para.getSentences();
-			/*
-			 * BreakIterator boundary =
-			 * BreakIterator.getSentenceInstance(Locale.US);
-			 * boundary.setText(myPara); int start = boundary.first(); for (int
-			 * end = boundary.next(); end != BreakIterator.DONE; start = end,
-			 * end = boundary.next()){ String sentence =
-			 * myPara.substring(start,end); //sents.add(sentence);
-			 * System.out.println(sentence); }
-			 */
-
-		}
+	public void align() {
 
 	}
 
 	public static void main(String argb[]) throws IOException {
-		ACEImporter importer = new ACEImporter(
-				"E:\\chenxu\\cmu\\IEEE paper data\\parallel data\\LDC Data\\ACE 2005 Multilingual LDC2005E18\\ACE2005-TrainingData-V6.0\\English\\bc\\timex2norm");
+		Copy_ACEImporter importer = new Copy_ACEImporter(
+				"C:\\Users\\Wynn\\Documents\\wynnzh\\data\\LDC\\ACE\\ACE2005-TrainingData-V6.0\\English\\nw");
 		for (Entry<String, Document> e : importer.sDocs.entrySet()) {
 			if (e.getKey() == null)
 				continue;
-			// System.out.println(e.getKey());
+			System.out.println(e.getKey());
 			ArrayList<Paragraph> paras = e.getValue().getP();
 			for (Paragraph para : paras) {
-				// System.out.println(para.getParagraphString());
-				// System.out.println(para.getParaStart());
+				System.out.println(para.getParagraphString());
+				System.out.println(para.getParaStart());
 			}
-
 		}
 		for (Entry<String, TagDocument> e : importer.tagDoc.entrySet()) {
 			if (e.getKey() == null)
@@ -173,19 +56,16 @@ public class ACEImporter {
 
 			Document doc = importer.sDocs.get(e.getKey());
 
-			// System.out.println(e.getKey());
+			System.out.println(e.getKey());
 			for (Paragraph p : doc.getP()) {
 				String paraString = p.getParagraphString();
 				int start = p.getParaStart();
 				int end = start + paraString.length();
 
-				/*
-				 * for (ACE_NETag tag : a) if (tag.getStart() >= start &&
-				 * tag.getEnd() <= end) System.out.println(tag.getStart() + " "
-				 * + tag.getEnd() + " " + tag.getCoarseNEType() + " " +
-				 * paraString.substring(tag.getStart() - start, tag.getEnd() -
-				 * start + 2));
-				 */
+				for (ACE_NETag tag : a)
+					if (tag.getStart() >= start && tag.getEnd() <= end)
+						System.out.println(tag.getStart() + " " + tag.getEnd() + " " + tag.getCoarseNEType() + " "
+								+ paraString.substring(tag.getStart() - start, tag.getEnd() - start + 2));
 			}
 		}
 
@@ -214,8 +94,7 @@ public class ACEImporter {
 		}
 	}
 
-	private void fillACETagDoc(TagDocument doc, File absoluteFile)
-			throws IOException {
+	private void fillACETagDoc(TagDocument doc, File absoluteFile) throws IOException {
 
 		BufferedReader br = new BufferedReader(new FileReader(absoluteFile));
 
@@ -245,8 +124,7 @@ public class ACEImporter {
 				b_head = true;
 			} else if (line.startsWith("</head>")) {
 				b_head = false;
-			} else if (line.startsWith("<charseq ") && b_head == true
-					&& b_mention == true) {
+			} else if (line.startsWith("<charseq ") && b_head == true && b_mention == true) {
 				String[] tokens = line.split(">");
 				String mention = tokens[1].split("<")[0];
 				String[] nums = tokens[0].split(" ");
@@ -254,8 +132,7 @@ public class ACEImporter {
 				start = start.substring(0, start.length() - 1);
 				String end = nums[2].split("=\"")[1];
 				end = end.substring(0, end.length() - 1);
-				ACE_NETag tag = new ACE_NETag(mention, Integer.parseInt(start),
-						Integer.parseInt(end), etype, esubtype);
+				ACE_NETag tag = new ACE_NETag(mention, Integer.parseInt(start), Integer.parseInt(end), etype, esubtype);
 
 				doc.addTag(tag);
 			}
@@ -317,18 +194,32 @@ public class ACEImporter {
 				paraString = new StringBuilder();
 				paras.add(p);
 
-			} else if (line.startsWith("<TURN>")) {
+			} else if (line.startsWith("<TURN>")||line.startsWith("<POST>")) {
 				lcount++;
 				paraString.append("\n");
-			} else if (line.startsWith("</TURN>")) {
+			} else if (line.startsWith("</TURN>")||line.startsWith("</POST>")) {
 				lcount++;
 				paraString.append("\n");
 
 			} else if (line.startsWith("<SPEAKER>")) {
 
 				lcount += line.length() - 19 + 1;
-				paraString.append(line.split(">")[1].split("<")[0])
-						.append("\n");
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
+
+			} else if (line.startsWith("<POSTDATE>")) {
+
+				lcount += line.length() - 21 + 1;
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
+
+			} else if (line.startsWith("<POSTER>")) {
+
+				lcount += line.length() - 17 + 1;
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
+
+			} else if (line.startsWith("<SUBJECT>")) {
+
+				lcount += line.length() - 19 + 1;
+				paraString.append(line.split(">")[1].split("<")[0]).append("\n");
 
 			} else if (b_content == true) {
 

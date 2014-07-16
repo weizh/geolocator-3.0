@@ -27,6 +27,7 @@ under the License.
 
 package edu.cmu.geolocator.parser;
 
+import edu.cmu.geolocator.parser.Universal.ACE_MTNERParser;
 import edu.cmu.geolocator.parser.Universal.MTNERParser;
 import edu.cmu.geolocator.parser.english.EnglishParser;
 import edu.cmu.geolocator.parser.english.EnglishRuleSTBDParser;
@@ -93,6 +94,10 @@ public static SpanishRuleSTBDParser getEsSTBDParser() {
 
 public static SpanishRuleToponymParser getEsToponymParser() {
     return SpanishRuleToponymParser.getInstance();
+}
+public static ACE_MTNERParser getACENERParser() {
+	// TODO Auto-generated method stub
+	return ACE_MTNERParser.getInstance();
 }
 
 }

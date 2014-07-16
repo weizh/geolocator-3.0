@@ -36,6 +36,22 @@ public class Sentence {
 
   String id;
 
+  public int getStart() {
+	return start;
+}
+public void setStart(int start) {
+	this.start = start;
+}
+public int getEnd() {
+	return end;
+}
+public void setEnd(int end) {
+	this.end = end;
+}
+
+int start, end;
+
+  
   public Sentence(String s){
     this.setSentenceString(s);
   }
